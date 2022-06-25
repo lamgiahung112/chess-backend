@@ -3,7 +3,7 @@ import {
     createUserHandler,
     userLoginHandler,
 } from "./controllers/user.controller"
-import { validateRequests } from "./middlewares"
+import { validateRequests, handleError } from "./middlewares"
 import { createUserSchema, userLoginSchema } from "./schemas/user.schema"
 
 export default function initRoute(app: Application) {

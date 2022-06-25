@@ -1,28 +1,41 @@
-import { Request, Response } from "express"
+import { NextFunction, Request, Response } from "express"
 import { createUser, validatePassword } from "../services/user.service"
-import { HttpStatus } from "../configs"
+import { HttpStatus, HttpResponse } from "../configs"
 import { generateAccessToken } from "../services/auth.service"
 
-export async function createUserHandler(req: Request, res: Response) {
+export async function createUserHandler(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
+    const data: HttpResponse = {
+        payload: null,
+    }
+
     try {
         const user = await createUser(req.body)
-        return res.send(user)
+        data.payload = user
+        return res.status(HttpStatus.OK).json(data)
     } catch (error) {
-        return res.status(HttpStatus.BAD_REQUEST).send(error)
+        next(error)
     }
 }
 
-export async function userLoginHandler(req: Request, res: Response) {
+export async function userLoginHandler(
+    req: Request,
+    res: Response,
+    next: NextFunction
+) {
+    const data: HttpResponse = {
+        payload: null,
+    }
+
     try {
         const validUser = await validatePassword(req.body)
-
-        if (!validUser) return res.status(HttpStatus.BAD_REQUEST).send()
-
         const accessToken = generateAccessToken(validUser)
-        res.status(HttpStatus.OK).json({
-            accessToken,
-        })
+        data.payload = { accessToken }
+        return res.status(HttpStatus.OK).json(data)
     } catch (error) {
-        res.status(HttpStatus.BAD_REQUEST).send(error)
+        next(error)
     }
 }
