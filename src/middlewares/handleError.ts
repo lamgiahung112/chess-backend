@@ -7,7 +7,6 @@ const handleError = (
     res: Response,
     next: NextFunction
 ) => {
-    console.log("catch error here")
     let customErr = err
     if (!(err instanceof APIError)) {
         customErr = new APIError(

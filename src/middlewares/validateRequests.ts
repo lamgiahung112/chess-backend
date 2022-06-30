@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express"
 import { AnySchema } from "yup"
-import { HttpStatus } from "../configs"
+import { APIError, HttpStatus } from "../configs"
 
 const validate =
     (schema: AnySchema) =>
@@ -12,10 +12,13 @@ const validate =
                 params: req.params,
             })
             return next()
-        } catch (error: any) {
-            return res
-                .status(HttpStatus.BAD_REQUEST)
-                .send({ errors: error?.errors })
+        } catch {
+            next(
+                new APIError(
+                    "Invalid Request to server",
+                    HttpStatus.BAD_REQUEST
+                )
+            )
         }
     }
 

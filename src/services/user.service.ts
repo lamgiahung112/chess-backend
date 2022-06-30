@@ -20,15 +20,12 @@ const validatePassword = async ({
     password: string
 }): Promise<UserDocument> => {
     const user = await User.findOne({ username })
+    const isValid = user?.comparePassword(password)
 
-    if (!user) {
-        throw new APIError("Invalid Credentitals", HttpStatus.BAD_REQUEST)
+    if (!user || !isValid) {
+        throw new APIError("Invalid Credentials", HttpStatus.BAD_REQUEST)
     }
 
-    const isValid = user.comparePassword(password)
-
-    if (!isValid)
-        throw new APIError("Invalid Credentitals", HttpStatus.BAD_REQUEST)
     return user
 }
 
