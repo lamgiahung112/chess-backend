@@ -12,10 +12,10 @@ const validate =
                 params: req.params,
             })
             return next()
-        } catch {
+        } catch (error: any) {
             next(
                 new APIError(
-                    "Invalid Request to server",
+                    error?.errors[0] || "Invalid request to server",
                     HttpStatus.BAD_REQUEST
                 )
             )

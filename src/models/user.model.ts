@@ -4,6 +4,7 @@ import bcrypt from "bcrypt"
 export interface UserDocument extends mongoose.Document {
     username: string
     password: string
+    email: string
     updatedAt: Date
     createdAt: Date
     comparePassword: (candidatePassword: string) => boolean
@@ -17,6 +18,11 @@ const UserSchema = new mongoose.Schema<UserDocument>(
             unique: true,
         },
         password: { type: String, required: true },
+        email: {
+            type: String,
+            required: true,
+            unique: true,
+        },
     },
     {
         timestamps: true,
