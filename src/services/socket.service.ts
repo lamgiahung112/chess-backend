@@ -20,13 +20,29 @@ const socket = (io: Server) => {
                 participants: 1,
             }
 
-            // client is subscribed to new room
             socket.join(roomID)
 
             // emit to everyone there's a new room
             socket.broadcast.emit(EVENTS.SERVER.ROOMS, rooms)
             socket.emit(EVENTS.SERVER.ROOMS, rooms)
+
             socket.emit(EVENTS.SERVER.JOINED_ROOM, roomID)
+        })
+
+        socket.on(EVENTS.CLIENT.JOIN_ROOM, ({ _roomID, username }) => {
+            console.log(
+                `User with id ${socket.id} joined room: ${rooms[_roomID].name}`
+            )
+
+            socket.join(_roomID)
+            socket.emit(EVENTS.SERVER.JOINED_ROOM, _roomID)
+            socket.broadcast.emit(EVENTS.SERVER.PLAYER_JOIN_CLIENT_ROOM, {
+                username,
+            })
+        })
+
+        socket.on(EVENTS.CLIENT.LEAVE_ROOM, ({ _roomID }) => {
+            socket.leave(_roomID)
         })
     })
 }
